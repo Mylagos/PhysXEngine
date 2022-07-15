@@ -1,13 +1,9 @@
-# Une template pour les projets CMake de la SAE
+This project was made in the course of the gpr 4400. It is a 2D physics engine using SFML as a graphical engine.
 
-Ce repo sert de template pour les projets CMake fait a la SAE institute.
-Ils incluent tous les fichiers nécéssaires afin de compiler un projet SFML et Box2D avec vcpkg.
+Documentation is on the wiki for this repo on github
 
-## Comment utiliser cette template ?
 
-1. Créer un répo qui se base sur cette template
-2. Renomer le dossier "project-name" avec le nom de votre projet
-3. Chercher les "Todo" et renomer les "project-name" avec le nom de votre projet
-4. Chercher les "Todo" et commenter/décommenter les lignes si vous ne voulez pas que la console s'affiche
-5. Ouvrir le dossier avec Visual Studio et choisir le bon target de build.
-6. Bosser !
+GETTING STARTED
+Install Vcpkg
+Get a C++20 compiler
+Build with CMake
