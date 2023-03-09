@@ -5,4 +5,5 @@
 namespace Utilities
 {
 	sf::Vector2f WorldToSfmlPos(Vector2D worldPos, const sf::RenderWindow& window);
+	Vector2D SfmlToWorldPos(Vector2D worldPos, const sf::RenderWindow& window);
 }

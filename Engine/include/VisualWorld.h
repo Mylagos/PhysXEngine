@@ -16,7 +16,7 @@ private:
 	bool isOverMax = false;
 public:
 	VisualWorld();
-	~VisualWorld();
+	~VisualWorld() = default;
 
 	void UpdatePhysics() const;
 	void Draw();

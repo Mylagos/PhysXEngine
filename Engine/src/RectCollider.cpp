@@ -30,21 +30,17 @@ void RectCollider::UpdateRectPoints(Vector2D pos)
 	rectPoints_.emplace_back(Vector2D(+ tempx, - tempy));
 	rectPoints_.emplace_back(Vector2D(- tempx, - tempy));
 	CalculateRotatedRectPoints();
-	//std::cout << rectRotatedPoints_.at(0).X() << " " << rectRotatedPoints_.at(0).Y() << "\n";
 }
 
 void RectCollider::CalculateRotatedRectPoints()
 {
-	//if(rotationAngle_ != 0)
-	//{
 	rectRotatedPoints_.clear();
-		for(int i = 0; i<rectPoints_.size(); i++)
+		for (auto& rectPoint : rectPoints_)
 		{
-			rectRotatedPoints_.emplace_back(Vector2D(position_.X() + rectPoints_.at(i).Rotate(rotationAngle_).X(),
-				position_.Y() + rectPoints_.at(i).Rotate(rotationAngle_).Y()
-			));
+			rectRotatedPoints_.emplace_back(position_.X() + rectPoint.Rotate(rotationAngle_).X(),
+			                                position_.Y() + rectPoint.Rotate(rotationAngle_).Y()
+			);
 		}
-	//}
 }
 
 std::pair<Vector2D, Vector2D> RectCollider::ReturnAABBCollider()

@@ -42,14 +42,3 @@ void Entity::EntityToSfmlPos(const sf::RenderWindow& window) const
 {
 	shapePtr_->setPosition(Utilities::WorldToSfmlPos(this->bodyPtr_->getPosition(), window));
 }
-
-//Vector2D Entity::rbToEntityCenterOrigin() const
-//{
-//	Vector2D temp;
-//
-//	//Sets the origin to the center of the SFML shape instead of top left
-//	temp.SetX(bodyPtr_->getPosition().X() + bodyPtr_->getSize().X()/2.0f);
-//	temp.SetY(bodyPtr_->getPosition().Y() + bodyPtr_->getSize().Y()/2.0f);
-//
-//	return temp;
-//}

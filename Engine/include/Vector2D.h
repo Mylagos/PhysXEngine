@@ -2,49 +2,49 @@
 
 #include <iostream>
 #include <vector>
-#include <math.h>
 
 class Vector2D
 {
 private:
-	float _x = 0.0f;
-	float _y = 0.0f;
-	//Vector2D _normalized;
+	float x_ = 0.0f;
+	float y_ = 0.0f;
 public:
 	Vector2D(float, float);
+	Vector2D(const int, const int);
+
 	Vector2D() = default;
 	//~Vector2D();
 
-	float SqrMagnitude() const;
-	float Magnitude() const;
-	Vector2D Normalized() const;
-	float Distance(Vector2D vector2);
+	[[nodiscard]] float SqrMagnitude() const;
+	[[nodiscard]] float Magnitude() const;
+	[[nodiscard]] Vector2D Normalized() const;
+	[[nodiscard]] float Distance(Vector2D vector2) const;
 
-	Vector2D ReturnClosestPoint(std::vector<Vector2D>);
-	Vector2D OrthoRight();
-	Vector2D OrthoLeft();
+	[[nodiscard]] Vector2D ReturnClosestPoint(const std::vector<Vector2D>&) const;
+	[[nodiscard]] Vector2D OrthoRight() const;
+	[[nodiscard]] Vector2D OrthoLeft() const;
 
 	//OPERATORS
 	Vector2D operator+(const Vector2D) const;
-	Vector2D operator-(const Vector2D);
-	Vector2D operator-();
+	Vector2D operator-(const Vector2D) const;
+	Vector2D operator-() const;
 
 	Vector2D operator+=(const Vector2D);
 	Vector2D operator-=(const Vector2D);
 
-	Vector2D operator*(const float);
-	Vector2D operator/(const float);
+	Vector2D operator*(const float) const;
+	Vector2D operator/(const float) const;
 
-	bool operator>(const Vector2D);
-	bool operator<(const Vector2D);
+	bool operator>(const Vector2D) const;
+	bool operator<(const Vector2D) const;
 
-	Vector2D Rotate(float radiant);
+	[[nodiscard]] Vector2D Rotate(float radiant) const;
 
 
 	//GET SET
-	float X() { return _x; }
-	float Y() { return _y; }
-	void SetX(float x) { this->_x = x; }
-	void SetY(float y) { this->_y = y; }
+	[[nodiscard]] float X() const { return x_; }
+	[[nodiscard]] float Y() const { return y_; }
+	void SetX(const float x) { this->x_ = x; }
+	void SetY(const float y) { this->y_ = y; }
 	void SetValues(float x, float y);
 };

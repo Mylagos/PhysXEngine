@@ -8,6 +8,3 @@ project ("PhysxEngine")
 set(EXECUTABLE_CUSTOM_NAME "Engine")
 add_subdirectory ("Engine")
 
-set(EXECUTABLE_CUSTOM_NAME "Vectors")
-add_subdirectory ("Vectors")
- 

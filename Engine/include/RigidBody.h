@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Vector2D.h"
 #include "Collider.h"
 #include "RectCollider.h"
@@ -24,11 +26,9 @@ private:
 public:
 
 	RigidBody();
-	RigidBody(Vector2D position, float mass);
 	RigidBody(Vector2D position, float radius, float mass);
 	RigidBody(Vector2D position, Vector2D widthToHeight, float mass);
 	RigidBody(Vector2D position, Vector2D widthToHeight, float mass, float rotation);
-	~RigidBody();
 
 
 	void update(float deltaTime);
@@ -38,6 +38,7 @@ public:
 	void AddForce(Vector2D);
 	void SumForce();
 	void ResetForce();
+	void AddVelocity(Vector2D);
 
 	bool operator < (const RigidBody& rb) const
 	{

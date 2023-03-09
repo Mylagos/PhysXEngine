@@ -47,11 +47,9 @@ bool Collider::SAT(Vector2D axis, std::vector<Vector2D> rect1Points, std::vector
 		if (mtvMin > std::abs(col2Max - col1Min))
 		{
 			mtvMin = col2Max - col1Min;
-			//std::cout << "case1\n";
 		}
 		if (mtvMin > std::abs(col1Max - col2Min)) {
 			mtvMin = col1Max - col2Min;
-			//std::cout << "case2\n";
 		}
 		mtv = mtvMin;
 		return true;
@@ -93,11 +91,9 @@ bool Collider::SAT(Vector2D axis, std::vector<Vector2D> rectPoints, float radius
 		if (mtvMin > std::abs(circleMax - rectMin))
 		{
 			mtvMin = circleMax - rectMin;
-			//std::cout << "case1\n";
 		}
 		if (mtvMin > std::abs(rectMax - circleMin)) {
 			mtvMin = rectMax - circleMin;
-			//std::cout << "case2\n";
 		}
 		mtv = mtvMin;
 		return true;

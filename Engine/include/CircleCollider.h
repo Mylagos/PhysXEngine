@@ -17,5 +17,5 @@ public:
 		position_ = pos;
 	};
 	std::pair<Vector2D, Vector2D> ReturnAABBCollider() override;
-	float returnRadius() { return radius_; }
+	[[nodiscard]] float ReturnRadius() const { return radius_; }
 };

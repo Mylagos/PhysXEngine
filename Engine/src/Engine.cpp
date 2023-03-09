@@ -26,8 +26,22 @@ void Engine::update_physics()
 	{
 		
 		CheckCollisions(body, i);
-		body->AddForce(gravity_);
 		body->update(engineDeltaTime_.asSeconds());
+
+		if(body->getPosition().Y() <= 100.0f)
+		{
+
+			Vector2D myVec = Vector2D(0.0f, 0.0f);
+			body->setVelocity(myVec);
+
+		}
+		else
+		{
+			
+			body->AddVelocity(gravity_*5.0f);
+		}
+		std::cout << body->getPosition().Y() << std::endl;
+		
 		i++;
 	}
 }
@@ -56,11 +70,11 @@ void Engine::update_physics()
 	 if (rb->getCollider()->getCollisionType() == CollisionType::NONE || rb2->getCollider()->getCollisionType() == CollisionType::NONE)
 		 std::cout << "Error: One or more rb colliding have base collider\n";
 
-	 RectCollider* rb1AsRect = dynamic_cast<RectCollider*>(rb->getCollider());
-	 RectCollider* rb2AsRect = dynamic_cast<RectCollider*>(rb2->getCollider());
+	 auto* rb1AsRect = dynamic_cast<RectCollider*>(rb->getCollider());
+	 auto* rb2AsRect = dynamic_cast<RectCollider*>(rb2->getCollider());
 
-	 CircleCollider* rb1AsCircle = dynamic_cast<CircleCollider*>(rb->getCollider());
-	 CircleCollider* rb2AsCircle = dynamic_cast<CircleCollider*>(rb2->getCollider());
+	 auto* rb1AsCircle = dynamic_cast<CircleCollider*>(rb->getCollider());
+	 auto* rb2AsCircle = dynamic_cast<CircleCollider*>(rb2->getCollider());
 
 	 float MTV = FLT_MAX;
 
@@ -72,15 +86,12 @@ void Engine::update_physics()
 		 axises = Collider::SatAxes(
 			 Vector2D(rb2AsRect->ReturnPoints().at(0) - rb2AsRect->ReturnPoints().at(1)),
 			 Vector2D(rb2AsRect->ReturnPoints().at(0) - rb2AsRect->ReturnPoints().at(1)));
-		 
-		 std::cout << "MTV ----------------------\n";
-		 for (int i = 0; i < axises.size(); i++)
+
+		 for (const auto& axis : axises)
 		 {
 			 float tempMTV = 0;
-			 if (!Collider::SAT(axises.at(i), rb1AsRect->ReturnPoints(), rb2AsRect->ReturnPoints(), tempMTV))
+			 if (!Collider::SAT(axis, rb1AsRect->ReturnPoints(), rb2AsRect->ReturnPoints(), tempMTV))
 			 	return false;
-			 
-			
 			
 			if(std::abs(MTV) > std::abs(tempMTV))
 			{
@@ -93,9 +104,9 @@ void Engine::update_physics()
 	 //Circle to Circle
 	 if (rb1AsCircle != nullptr && rb2AsCircle != nullptr)
 	 {
-		 if (!(rb1AsCircle->returnRadius() + rb2AsCircle->returnRadius() > rb->getPosition().Distance(rb2->getPosition())))
+		 if (!(rb1AsCircle->ReturnRadius() + rb2AsCircle->ReturnRadius() > rb->getPosition().Distance(rb2->getPosition())))
 			 return false;
-		 MTV = rb1AsCircle->returnRadius() + rb2AsCircle->returnRadius() - rb->getPosition().Distance(rb2->getPosition());
+		 MTV = rb1AsCircle->ReturnRadius() + rb2AsCircle->ReturnRadius() - rb->getPosition().Distance(rb2->getPosition());
 	 }
 
 	 //Poly to Circle 
@@ -108,7 +119,7 @@ void Engine::update_physics()
 		 for (int i = 0; i < 2; i++)
 		 {
 			 float tempMTV = 0;
-			 if (!Collider::SAT(axises.at(i), rb1AsRect->ReturnPoints(), rb2AsCircle->returnRadius(), rb2AsCircle->getColPos(), tempMTV))
+			 if (!Collider::SAT(axises.at(i), rb1AsRect->ReturnPoints(), rb2AsCircle->ReturnRadius(), rb2AsCircle->getColPos(), tempMTV))
 				 return false;
 			 if (std::abs(MTV) > std::abs(tempMTV))
 			 {
@@ -120,7 +131,6 @@ void Engine::update_physics()
 	//Circle on rect
 	 if (rb2AsRect != nullptr && rb1AsCircle != nullptr)
 	 {
-
 		 axises = Collider::SatAxes(
 			 Vector2D(rb2AsRect->ReturnPoints().at(0) - rb2AsRect->ReturnPoints().at(1)),
 			 Vector2D(rb1AsCircle->getColPos().ReturnClosestPoint(rb2AsRect->ReturnPoints())));
@@ -128,7 +138,7 @@ void Engine::update_physics()
 		 for (int i = 0; i < 2; i++)
 		 {
 			 float tempMTV = 0;
-			 if (!Collider::SAT(axises.at(i), rb2AsRect->ReturnPoints(), rb1AsCircle->returnRadius(), rb1AsCircle->getColPos(), tempMTV))
+			 if (!Collider::SAT(axises.at(i), rb2AsRect->ReturnPoints(), rb1AsCircle->ReturnRadius(), rb1AsCircle->getColPos(), tempMTV))
 				 return false;
 			 if (std::abs(MTV) > std::abs(tempMTV))
 			 {
