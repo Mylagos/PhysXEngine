@@ -1,0 +1,6 @@
+[submodule "tracy"]
+	path = tracy
+	url = https://github.com/wolfpld/tracy.git
+[submodule "Engine/externals/tracy"]
+	path = Engine/externals/tracy
+	url = https://github.com/wolfpld/tracy.git

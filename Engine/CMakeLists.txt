@@ -5,6 +5,8 @@ cmake_minimum_required (VERSION 3.8)
 set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+
 set_property(GLOBAL PROPERTY USE_FOLDERS On)
 
 # Add data files
@@ -33,6 +35,8 @@ add_custom_target(
 find_package(OpenGL REQUIRED)
 find_package(SFML COMPONENTS system window graphics main CONFIG REQUIRED)
 find_package(box2d CONFIG REQUIRED)
+find_package(OpenMP REQUIRED)
+
 include_directories(include/)
 
 # Add source to this project's executable.  
@@ -47,7 +51,12 @@ add_dependencies(${EXECUTABLE_CUSTOM_NAME} DataTarget-${EXECUTABLE_CUSTOM_NAME})
 
 # Link libraries
 target_link_libraries(${EXECUTABLE_CUSTOM_NAME} PRIVATE sfml-main sfml-graphics sfml-audio sfml-window sfml-system)
+target_link_libraries(${EXECUTABLE_CUSTOM_NAME} PUBLIC OpenMP::OpenMP_CXX)
 
+if(ENABLE_PROFILER)
+target_compile_definitions(${EXECUTABLE_CUSTOM_NAME} PUBLIC TRACY_ENABLE)
+target_link_libraries(${EXECUTABLE_CUSTOM_NAME} PUBLIC TracyClient)
+endif()
 if(MSVC)
 target_link_libraries(${EXECUTABLE_CUSTOM_NAME} PRIVATE sfml-main FLAC OpenAL OpenGL Vorbis)
 else()

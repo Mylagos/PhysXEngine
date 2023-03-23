@@ -33,9 +33,6 @@ RigidBody::RigidBody(const Vector2D position, const Vector2D widthToHeight, cons
 
 void RigidBody::update(float deltaTime)
 {
-	ResetForce();
-	SumForce();
-	ApplyForce();
 	ApplyVelocity(deltaTime);
 	if (colliderPtr_->getCollisionType() == CollisionType::RECTANGLE)
 		colliderPtr_->UpdateRectPoints(position_);
@@ -44,40 +41,25 @@ void RigidBody::update(float deltaTime)
 }
 
 
-void RigidBody::ResetForce()
-{
-	forces_.clear();
-	summForce_ = Vector2D(0, 0);
-}
+
 
 void RigidBody::AddVelocity(Vector2D force)
 {
 	velocity_ += force;
 }
 
-
-void RigidBody::SumForce()
+void RigidBody::MaxAccelerate(float maxAccelerate)
 {
-	for (const auto& f : forces_)
-	{
-		summForce_ += f;
-	}
-}
+	float thisAccelerate = velocity_.X() + velocity_.Y();
+	float surplus = thisAccelerate - maxAccelerate;
+	Vector2D newVector = Vector2D(velocity_.X() / thisAccelerate * surplus, velocity_.Y() / thisAccelerate * surplus);
+	velocity_ = newVector;
 
-void RigidBody::ApplyForce()
-{
-	velocity_ += summForce_;
 }
-
 
 
 void RigidBody::ApplyVelocity(float deltaTime)
 {
 	position_ += velocity_ * deltaTime;
-}
-
-void RigidBody::AddForce(Vector2D newForce)
-{
-	forces_.emplace_back(newForce);
 }
 

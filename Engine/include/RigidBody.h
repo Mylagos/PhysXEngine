@@ -13,8 +13,6 @@ class RigidBody
 
 private:
 	Vector2D position_;
-	std::vector<Vector2D> forces_;
-	Vector2D summForce_;
 	Vector2D velocity_;
 	float mass_ = 0;
 
@@ -34,11 +32,8 @@ public:
 	void update(float deltaTime);
 
 	void ApplyVelocity(float deltaTime);
-	void ApplyForce();
-	void AddForce(Vector2D);
-	void SumForce();
-	void ResetForce();
 	void AddVelocity(Vector2D);
+	void MaxAccelerate(float);
 
 	bool operator < (const RigidBody& rb) const
 	{

@@ -1,7 +1,9 @@
 #pragma once
+#include "KdTree.h"
 #include "RigidBody.h"
 #include "SFML/Graphics.hpp"
 #include <vector>
+
 
 class Engine
 {
@@ -11,6 +13,7 @@ private:
 	 std::vector<std::pair<RigidBody*, RigidBody*>> ooo;
 	 static sf::Clock engineClock_;
 	 static sf::Time engineDeltaTime_;
+	 inline static KdTree kdTree_{};
 public:
 	 static void addRigidBody(RigidBody* body);
 	 static void CheckCollisions(RigidBody* body, int i);
