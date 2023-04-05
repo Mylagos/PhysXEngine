@@ -1,11 +1,12 @@
 #pragma once
 #include "RigidBody.h"
+#include <algorithm>
+#include <ranges>
 
 #ifdef TRACY_ENABLE
 #include <tracy/Tracy.hpp>
 #endif
 
-#include <algorithm>
 class KdTree
 {
 public:
@@ -13,11 +14,14 @@ public:
 	{
 		KdNode* parent = nullptr;
 		KdNode* childLeft = nullptr;
-		KdNode* chlidRight = nullptr;
+		KdNode* childRight = nullptr;
+
 		int depth = 0;
 		bool divideIsX = true;
 		float division = 0;
-		std::vector<std::pair<float, float>> myTempPoints{};
+
+		std::vector<std::pair<float, float>> myTempPoints;
+		std::vector<int> indexOfNodeBodies;
 
 		KdNode() = default;
 
@@ -35,6 +39,9 @@ public:
 
 		void SortBasedOnDivX()
 		{
+#ifdef TRACY_ENABLE
+			ZoneScoped;
+#endif
 			if (divideIsX)
 			{
 				std::ranges::sort(myTempPoints, {}, &std::pair<float, float>::first);
@@ -65,43 +72,61 @@ public:
 				{
 					myTempPoints.emplace_back(*myPoint);
 				}
-				parent->chlidRight = this;
+				parent->childRight = this;
 			}
 			else
 			{
-				for (auto myPoint = parent->myTempPoints.begin(); myPoint != parent->myTempPoints.begin() + middle; myPoint++)
-				{
-					myTempPoints.emplace_back(*myPoint);
-				}
+				testFn(middle);
 				parent->childLeft = this;
 			}
 			SortBasedOnDivX();
 			division = myTempPoints.at(myTempPoints.size() / 2).first;
 			myTempPoints.erase(myTempPoints.begin() + myTempPoints.size() / 2);
 		}
+		void testFn(long long middle)
+		{
+#ifdef TRACY_ENABLE
+			ZoneScoped;
+#endif
+			for (auto myPoint = parent->myTempPoints.begin(); myPoint != parent->myTempPoints.begin() + middle; myPoint++)
+			{
+
+				myTempPoints.emplace_back(*myPoint);
+			}
+		}
 	};
 private:
-	std::vector<KdNode*> nodes_;
+	// For reverse iteration
+	std::vector<std::unique_ptr<KdNode>> nodes_;
+
+	const std::vector<RigidBody*>* engineRB_;
+
+	// For test
 	int elemSize = 0;
 	int frameStop = 0;
 public:
 
 	KdTree() = default;
+
 	void ResetTree()
 	{
 		nodes_.clear();
 	}
+
 	void Init(const std::vector<RigidBody*>& bodyList)
 	{
-		if (frameStop == 50)
+#ifdef TRACY_ENABLE
+		ZoneScoped;
+#endif
+		if (frameStop == 0)
 		{
 			frameStop = 0;
 			if (bodyList.size() != 0)
 			{
-
+				engineRB_ = &bodyList;
 				std::vector<std::pair<float, float>> temp;
 				elemSize = bodyList.size();
-				std::cout << elemSize << std::endl;
+				//std::cout << elemSize << std::endl;
 				for (auto body : bodyList)
 				{
 					temp.emplace_back(body->getPosition().X(), body->getPosition().Y());
@@ -114,9 +139,11 @@ public:
 
 
 				nodes_.emplace_back(new KdNode);
-				auto rootNode = nodes_.at(0);
+				auto rootNode = nodes_.at(0).get();
 				rootNode->depth = 1;
 				rootNode->divideIsX = xDiff > yDiff;
+
+				rootNode->myTempPoints.reserve(temp.size());
 
 				if (rootNode->divideIsX)
 				{
@@ -133,7 +160,7 @@ public:
 				GenerateTree();
 			}
 		}
-		frameStop++;
+		frameStop;
 	}
 
 	void GenerateTree()
@@ -142,7 +169,16 @@ public:
 		ZoneScoped;
 #endif
 		int i = 0;
-		auto myNode = nodes_.at(0);
+		auto myNode = nodes_.at(0).get();
+
+		/*int passNum;
+		int rbNum;
+		while (rbNum > 7)
+		{
+			rbNum /= 2;
+			++passNum;
+		}*/
+
 		while (i != nodes_.size())
 		{
 			if (myNode->depth > 4)
@@ -157,7 +193,7 @@ public:
 				nodes_.emplace_back(newNodeLeft);
 				nodes_.emplace_back(newNodeRight);
 			}
-			myNode = nodes_.at(i);
+			myNode = nodes_.at(i).get();
 			i++;
 
 
@@ -176,5 +212,37 @@ public:
 		}
 		std::cout << "Warning : node dimension invalid" << std::endl;
 		return false;
+	}
+
+	void InsertRb(RigidBody* body, int index)
+	{
+		std::pair<Vector2D, Vector2D> AABB = body->getCollider()->ReturnAABBCollider();
+		auto myNode = nodes_.at(0).get();
+		float min = AABB.first.Y();
+		float max = AABB.second.Y();
+		while (myNode->childRight != nullptr && myNode->childLeft != nullptr)
+		{
+			float min = AABB.first.Y();
+			float max = AABB.second.Y();
+			if (myNode->parent->divideIsX)
+			{
+				float min = AABB.first.X();
+				float max = AABB.second.X();
+			}
+			// RIGHT
+			if (min > myNode->division && max > myNode->division)
+			{
+				myNode = myNode->childRight;
+			}
+			// LEFT
+			else if (min < myNode->division && max < myNode->division)
+			{
+				myNode = myNode->childLeft;
+			}
+			else
+			{
+				myNode->indexOfNodeBodies.emplace_back(index);
+			}
+		}
 	}
 };

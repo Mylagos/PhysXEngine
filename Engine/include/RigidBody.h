@@ -26,6 +26,7 @@ public:
 	RigidBody();
 	RigidBody(Vector2D position, float radius, float mass);
 	RigidBody(Vector2D position, Vector2D widthToHeight, float mass);
+	RigidBody(const Vector2D position, const Vector2D widthToHeight);
 	RigidBody(Vector2D position, Vector2D widthToHeight, float mass, float rotation);
 
 

@@ -23,6 +23,13 @@ RigidBody::RigidBody(const Vector2D position, const Vector2D widthToHeight, cons
 	Engine::addRigidBody(this);
 }
 
+RigidBody::RigidBody(const Vector2D position, const Vector2D widthToHeight) :
+	position_(position),
+	colliderPtr_(std::make_unique<RectCollider>(RectCollider(widthToHeight, position)))
+{
+	
+}
+
 RigidBody::RigidBody(const Vector2D position, const Vector2D widthToHeight, const float mass, float const rotation) :
 	position_(position),
 	mass_(mass),

@@ -25,7 +25,7 @@ void Engine::update_physics()
 	engineDeltaTime_ = engineClock_.restart();
 
 	int i = 0;
-	//std::cout << engineDeltaTime_.asMilliseconds() << " ";
+	std::cout << bodyList_.size() << "\n";
 	kdTree_.Init(bodyList_);
 	kdTree_.ResetTree();
 

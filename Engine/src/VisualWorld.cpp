@@ -120,9 +120,7 @@ void VisualWorld::WorldLoop()
 
 		//Draw();
 
-#ifdef TRACY_ENABLE
-		FrameMark;
-#endif
+
 	}
 }
 
@@ -141,4 +139,7 @@ void VisualWorld::Draw()
 		entity.draw(window_, sf::RenderStates::Default);
 	}
 	window_.display();
+#ifdef TRACY_ENABLE
+	FrameMark;
+#endif
 }
