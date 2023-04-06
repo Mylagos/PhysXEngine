@@ -68,11 +68,11 @@ public:
 
 			if (rightChild)
 			{
-				for (auto myPoint = parent->myTempPoints.begin() + middle; myPoint != parent->myTempPoints.end(); myPoint++)
+				myTempPoints.resize(middle);
+				for (int i = middle; i < middle/2; ++i)
 				{
-					myTempPoints.emplace_back(*myPoint);
+					myTempPoints.at(i- middle) = parent->myTempPoints.at(i);
 				}
-				parent->childRight = this;
 			}
 			else
 			{
@@ -88,10 +88,10 @@ public:
 #ifdef TRACY_ENABLE
 			ZoneScoped;
 #endif
-			for (auto myPoint = parent->myTempPoints.begin(); myPoint != parent->myTempPoints.begin() + middle; myPoint++)
+			myTempPoints.resize(middle);
+			for (int i = 0; i < middle; ++i)
 			{
-
-				myTempPoints.emplace_back(*myPoint);
+				myTempPoints.at(i) = parent->myTempPoints.at(i);
 			}
 		}
 	};
@@ -127,14 +127,14 @@ public:
 				std::vector<std::pair<float, float>> temp;
 				elemSize = bodyList.size();
 				//std::cout << elemSize << std::endl;
-				for (auto body : bodyList)
-				{
-					temp.emplace_back(body->getPosition().X(), body->getPosition().Y());
-				}
-				std::ranges::sort(temp, {}, &std::pair<float, float>::first);
+				
+				InitTestEmplace(temp);
+
+				TestSort(temp);
 				float xDiff = temp.at(0).first - temp.at(temp.size() - 1).first;
+
 				auto temp2 = temp;
-				std::ranges::sort(temp2, {}, &std::pair<float, float>::second);
+				TestSort2(temp2);
 				float yDiff = temp2.at(0).second - temp.at(temp2.size() - 1).second;
 
 
@@ -153,14 +153,50 @@ public:
 				}
 				else
 				{
-					rootNode->division = temp2.at(temp2.size() / 2).first;
-					temp2.erase(temp2.begin() + temp2.size() / 2);
-					rootNode->myTempPoints = std::move(temp2);
+					TestGenerateFirstChild(rootNode, temp2);
 				}
 				GenerateTree();
 			}
 		}
 		frameStop;
+	}
+
+	void InitTestEmplace(std::vector<std::pair<float, float>> &temp)
+	{
+#ifdef TRACY_ENABLE
+		ZoneScoped;
+#endif
+		temp.resize(elemSize);
+		for (int i = 0; i < elemSize; ++i)
+		{
+			temp.at(i) = std::make_pair(engineRB_->at(i)->getPosition().X(), engineRB_->at(i)->getPosition().Y());
+		}
+	}
+
+	void TestGenerateFirstChild(KdNode* rootNode, std::vector<std::pair<float, float>> temp2)
+	{
+#ifdef TRACY_ENABLE
+		ZoneScoped;
+#endif
+		rootNode->division = temp2.at(temp2.size() / 2).first;
+		temp2.erase(temp2.begin() + temp2.size() / 2);
+		rootNode->myTempPoints = std::move(temp2);
+	}
+
+	void TestSort(std::vector<std::pair<float, float>> &temp)
+	{
+#ifdef TRACY_ENABLE
+		ZoneScoped;
+#endif
+		std::ranges::sort(temp, {}, &std::pair<float, float>::first);
+	}
+
+	void TestSort2(std::vector<std::pair<float, float>> &temp2)
+	{
+#ifdef TRACY_ENABLE
+		ZoneScoped;
+#endif
+		std::ranges::sort(temp2, {}, &std::pair<float, float>::first);
 	}
 
 	void GenerateTree()
@@ -216,10 +252,11 @@ public:
 
 	void InsertRb(RigidBody* body, int index)
 	{
-		std::pair<Vector2D, Vector2D> AABB = body->getCollider()->ReturnAABBCollider();
+#ifdef TRACY_ENABLE
+		ZoneScoped;
+#endif
+		const std::pair<Vector2D, Vector2D> AABB = body->getCollider()->ReturnAABBCollider();
 		auto myNode = nodes_.at(0).get();
-		float min = AABB.first.Y();
-		float max = AABB.second.Y();
 		while (myNode->childRight != nullptr && myNode->childLeft != nullptr)
 		{
 			float min = AABB.first.Y();
@@ -230,12 +267,12 @@ public:
 				float max = AABB.second.X();
 			}
 			// RIGHT
-			if (min > myNode->division && max > myNode->division)
+			if (min > myNode->division && max > myNode->division && myNode->childRight)
 			{
 				myNode = myNode->childRight;
 			}
 			// LEFT
-			else if (min < myNode->division && max < myNode->division)
+			else if (min < myNode->division && max < myNode->division && myNode->childLeft)
 			{
 				myNode = myNode->childLeft;
 			}

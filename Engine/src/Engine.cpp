@@ -26,8 +26,8 @@ void Engine::update_physics()
 
 	int i = 0;
 	std::cout << bodyList_.size() << "\n";
-	kdTree_.Init(bodyList_);
-	kdTree_.ResetTree();
+	//kdTree_.Init(bodyList_);
+	//kdTree_.ResetTree();
 
 	/*for (auto& body : bodyList_)
 		body->setColliding(false);

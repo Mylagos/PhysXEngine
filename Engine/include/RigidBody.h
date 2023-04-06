@@ -26,7 +26,7 @@ public:
 	RigidBody();
 	RigidBody(Vector2D position, float radius, float mass);
 	RigidBody(Vector2D position, Vector2D widthToHeight, float mass);
-	RigidBody(const Vector2D position, const Vector2D widthToHeight);
+	RigidBody(Vector2D position, Vector2D widthToHeight);
 	RigidBody(Vector2D position, Vector2D widthToHeight, float mass, float rotation);
 
 
@@ -47,7 +47,7 @@ public:
 	void setColliding(bool isColliding) { this->isColliding_ = isColliding; }
 	[[nodiscard]] bool getColliding() const { return isColliding_; }
 
-	Collider* getCollider() const { return colliderPtr_.get(); }
+	[[nodiscard]] Collider* getCollider() const { return colliderPtr_.get(); }
 
 	[[nodiscard]] Vector2D getVelocity() const { return  velocity_; }
 	void setVelocity(Vector2D velocity) { this->velocity_ = velocity; }
