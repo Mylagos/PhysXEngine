@@ -30,28 +30,6 @@ find_package(benchmark CONFIG REQUIRED)
 # Add source to this project's executable.  
 file(GLOB_RECURSE PROJECT_SRC Engine/src/*.cpp Engine/include/*.h)
 
-# TODO: use the line with "win32" in it if you don't want the console
-add_executable(KdTree Benchmarks/KdTreeBench.cpp ${PROJECT_SRC})
-# add_executable(${EXECUTABLE_CUSTOM_NAME} win32 ${PROJECT_SRC})
-
-# Link libraries
-target_link_libraries(KdTree PRIVATE sfml-main sfml-graphics sfml-audio sfml-window sfml-system)
-target_link_libraries(KdTree PRIVATE benchmark::benchmark benchmark::benchmark_main)
-target_link_libraries(KdTree PUBLIC OpenMP::OpenMP_CXX)
-
-if(ENABLE_PROFILER)
-target_compile_definitions(KdTree PUBLIC TRACY_ENABLE)
-target_link_libraries(KdTree PUBLIC TracyClient)
-endif()
-if(MSVC)
-target_link_libraries(KdTree PRIVATE sfml-main FLAC OpenAL OpenGL Vorbis)
-else()
-target_link_libraries(KdTree PRIVATE X11 FLAC UDev OpenAL  ${OPENGL_LIBRARIES} )
-endif()
-
-target_link_libraries(KdTree PRIVATE box2d::box2d)
-target_include_directories(KdTree PRIVATE "Engine/include")
-
 # Add data files
 file(GLOB_RECURSE DATA_FILES data/*)
 source_group("data/" FILES ${DATA_FILES})
@@ -90,7 +68,31 @@ endif()
 target_link_libraries(main PRIVATE box2d::box2d)
 target_include_directories(main PRIVATE "Engine/include")
 
+file(GLOB BENCH_FILE Benchmarks/*.cpp)
+foreach(BENCH_FILE ${BENCH_FILE})
+    # TODO: use the line with "win32" in it if you don't want the console
+    get_filename_component(BENCH_NAME ${BENCH_FILE} NAME_WE)
+    add_executable(${BENCH_NAME} ${BENCH_FILE} ${PROJECT_SRC})
+    # add_executable(${EXECUTABLE_CUSTOM_NAME} win32 ${PROJECT_SRC})
 
+    # Link libraries
+    target_link_libraries(${BENCH_NAME} PRIVATE sfml-main sfml-graphics sfml-audio sfml-window sfml-system)
+    target_link_libraries(${BENCH_NAME} PRIVATE benchmark::benchmark benchmark::benchmark_main)
+    target_link_libraries(${BENCH_NAME} PUBLIC OpenMP::OpenMP_CXX)
+
+    if(ENABLE_PROFILER)
+        target_compile_definitions(${BENCH_NAME} PUBLIC TRACY_ENABLE)
+        target_link_libraries(${BENCH_NAME} PUBLIC TracyClient)
+    endif()
+    if(MSVC)
+        target_link_libraries(${BENCH_NAME} PRIVATE sfml-main FLAC OpenAL OpenGL Vorbis)
+    else()
+        target_link_libraries(${BENCH_NAME} PRIVATE X11 FLAC UDev OpenAL  ${OPENGL_LIBRARIES} )
+    endif()
+
+    target_link_libraries(${BENCH_NAME} PRIVATE box2d::box2d)
+    target_include_directories(${BENCH_NAME} PRIVATE "Engine/include")
+endforeach()
 
 option(ENABLE_PROFILER "Enable Tracy Profiling" OFF)
 if(ENABLE_PROFILER)

@@ -6,6 +6,7 @@ class CircleCollider : public Collider
 private:
 	float radius_ = 0;
 public:
+	virtual CircleCollider* clone_impl() const override { return new CircleCollider(*this); };
 	CircleCollider(float radius, Vector2D position);
 	std::vector<Vector2D> ReturnPoints() override
 	{

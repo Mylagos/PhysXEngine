@@ -1,10 +1,14 @@
 #include "Collider.h"
 
-
+#include "tracy/Tracy.hpp"
 
 
 bool Collider::SAT(Vector2D axis, std::vector<Vector2D> rect1Points, std::vector<Vector2D> rect2Points, float& mtv)
 {
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
+
 	Vector2D normalizedAxis = axis.Normalized();
 
 	float col1Min = std::numeric_limits<float>::max();
@@ -58,6 +62,9 @@ bool Collider::SAT(Vector2D axis, std::vector<Vector2D> rect1Points, std::vector
 
 bool Collider::SAT(Vector2D axis, std::vector<Vector2D> rectPoints, float radius, Vector2D circlePos, float& mtv)
 {
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
 	Vector2D normalizedAxis = axis.Normalized();
 
 	float rectMin = std::numeric_limits<float>::max();
@@ -110,6 +117,9 @@ Vector2D Collider::ProjectedPointOnAxis(Vector2D point, Vector2D axis)
 
 std::vector<Vector2D> Collider::SatAxes(Vector2D axis1, Vector2D axis2)
 {
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
 	std::vector<Vector2D> returnAxes;
 
 	returnAxes.emplace_back(axis1.OrthoLeft());
@@ -120,6 +130,22 @@ std::vector<Vector2D> Collider::SatAxes(Vector2D axis1, Vector2D axis2)
 	returnAxes.emplace_back(axis2);
 	returnAxes.emplace_back(axis2.OrthoRight());
 	returnAxes.emplace_back(-axis2);
+
+	return returnAxes;
+}
+
+std::vector<Vector2D> Collider::SatAxesOpti(Vector2D axis1, Vector2D axis2)
+{
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
+	std::vector<Vector2D> returnAxes;
+	returnAxes.resize(4);
+
+	returnAxes.at(0) = axis1.OrthoLeft();
+	returnAxes.at(1) = axis1;
+	returnAxes.at(2) = axis2.OrthoLeft();
+	returnAxes.at(3) = axis2;
 
 	return returnAxes;
 }

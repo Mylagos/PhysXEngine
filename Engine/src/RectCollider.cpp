@@ -6,6 +6,11 @@ RectCollider::RectCollider(Vector2D widthToHeight, Vector2D position) :
 	position_ = position;
 	collisionType_ = RECTANGLE;
 	UpdateRectPoints(position_);
+	if (widthToHeight.X() > widthToHeight.Y())
+		innerRadius_ = widthToHeight.Y() / 2.0f;
+	else
+		innerRadius_ = widthToHeight.X() / 2.0f;
+	outerRadius_ = sqrt(widthToHeight.X() * widthToHeight.X() + widthToHeight.Y() * widthToHeight.Y()) / 2.0f;
 
 }
 
@@ -16,7 +21,11 @@ RectCollider::RectCollider(Vector2D widthToHeight, Vector2D position, float rota
 
 	collisionType_ = RECTANGLE;
 	UpdateRectPoints(position);
-
+	if (widthToHeight.X() > widthToHeight.Y())
+		innerRadius_ = widthToHeight.Y() / 2.0f;
+	else
+		innerRadius_ = widthToHeight.X() / 2.0f;
+	outerRadius_ = sqrt(widthToHeight.X() * widthToHeight.X() + widthToHeight.Y() * widthToHeight.Y()) / 2.0f;
 }
 
 void RectCollider::UpdateRectPoints(Vector2D pos)

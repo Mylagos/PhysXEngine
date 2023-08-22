@@ -18,7 +18,7 @@ VisualWorld::VisualWorld()
 void VisualWorld::UpdatePhysics() const
 {
 
-	Engine::update_physics();
+	Engine::update_physicsOpti();
 }
 
 void VisualWorld::Events()
@@ -53,6 +53,29 @@ void VisualWorld::Events()
 			{
 				view_.zoom(0.5f);
 			}
+			if (MyEvent.key.code == sf::Keyboard::P)
+			{
+				for (int j = 0; j < 10; j++)
+				{
+					sf::CircleShape circleShape;
+					entities_.emplace_back(circleShape,
+						Vector2D(mouse_.getPosition(window_).x + j,
+							1080 - mouse_.getPosition(window_).y + j), 50.0f, 1.0f);
+					
+				}
+			}
+			if (MyEvent.key.code == sf::Keyboard::O)
+			{
+				for (int j = 0; j < 10; j++)
+				{
+					sf::RectangleShape rectangleShape;
+					rectangleShape.rotate(20.0f * j);
+					entities_.emplace_back(rectangleShape,
+						Vector2D(mouse_.getPosition(window_).x + j,
+							1080 - mouse_.getPosition(window_).y + j),
+						Vector2D(50 * (j * 0.25f), 50 * (j * 0.25f)), 1.0f, 20.0f * j);
+				}
+			}
 		case sf::Event::MouseButtonPressed:
 			if (MyEvent.mouseButton.button == sf::Mouse::Left)
 			{
@@ -74,6 +97,7 @@ void VisualWorld::Events()
 					Vector2D(50 * (i * 0.25f), 50 * (i * 0.25f)), 1.0f, 20.0f * i);
 
 			}
+
 
 			break;
 		case sf::Event::Closed:
@@ -100,7 +124,7 @@ void VisualWorld::WorldLoop()
 	while (window_.isOpen()) {
 
 		Events();
-		while (i < 50) {
+		/*while (i < 50) {
 			sf::RectangleShape rectangleShape;
 			rectangleShape.rotate(20.0f * i);
 			entities_.emplace_back(rectangleShape,
@@ -108,17 +132,18 @@ void VisualWorld::WorldLoop()
 				Vector2D(50 * (i * 0.25f), 50 * (i * 0.25f)), 1.0f, 20.0f * i);
 			i++;
 		}
-		i = 0;
+		i = 0;*/
 		UpdatePhysics();
-		window_.setView(view_);
+		/*window_.setView(view_);
 
 		fps_.update();
 		std::ostringstream ss;
 		ss << fps_.getFPS();
 
-		window_.setTitle(ss.str());
+		window_.setTitle(ss.str());*/
 
-		//Draw();
+
+		Draw();
 
 
 	}

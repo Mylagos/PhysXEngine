@@ -22,13 +22,17 @@ private:
 
 
 public:
+	int IsInNode = 0;
+	bool phisicCheckDone = false;
 
 	RigidBody();
+	RigidBody(RigidBody&);
 	RigidBody(Vector2D position, float radius, float mass);
+	RigidBody(Vector2D position, float radius);
 	RigidBody(Vector2D position, Vector2D widthToHeight, float mass);
 	RigidBody(Vector2D position, Vector2D widthToHeight);
 	RigidBody(Vector2D position, Vector2D widthToHeight, float mass, float rotation);
-
+	~RigidBody() = default;
 
 	void update(float deltaTime);
 

@@ -6,9 +6,11 @@ enum CollisionType { NONE, CIRCLE, RECTANGLE };
 class Collider
 {
 protected:
-	CollisionType collisionType_ = NONE;
 	Vector2D position_;
 public:
+	CollisionType collisionType_ = NONE;
+	auto clone() const { return std::unique_ptr<Collider>(clone_impl()); }
+	virtual Collider* clone_impl() const = 0;
 
 	virtual void UpdateRectPoints(Vector2D) = 0;
 
@@ -23,6 +25,7 @@ public:
 	static Vector2D ProjectedPointOnAxis(Vector2D point, Vector2D axis);
 
 	static std::vector<Vector2D> SatAxes(Vector2D axis1, Vector2D axis2);
+	static std::vector<Vector2D> SatAxesOpti(Vector2D axis1, Vector2D axis2);
 
 	Vector2D getColPos() { return position_; }
 	[[nodiscard]] CollisionType getCollisionType() const { return collisionType_; }
